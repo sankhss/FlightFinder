@@ -1,0 +1,25 @@
+# Xcode
+DerivedData/
+build/
+*.xcworkspace
+!default.xcworkspace
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/xcshareddata/xcschemes/
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# User-specific
+*.xcuserstate
+*.xcuserdatad
+*.swp
+*.lock
+
+# Temporary Files
+*.DS_Store
+*.idea
+
