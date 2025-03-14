@@ -25,7 +25,7 @@ final class NetworkClientTests: XCTestCase {
         let sut = NetworkClient()
         
         URLProtocolStub.testResponse = responseWithStatus(200)
-        let expectedData = "Success".data(using: .utf8)
+        let expectedData = anyData()
         URLProtocolStub.testData = expectedData
 
         let data = try await sut.get(url: anyURL())
@@ -37,11 +37,26 @@ final class NetworkClientTests: XCTestCase {
         let sut = NetworkClient()
         
         URLProtocolStub.testResponse = responseWithStatus(400)
-        URLProtocolStub.testData = Data()
+        URLProtocolStub.testData = anyData()
 
         do {
             _ = try await sut.get(url: anyURL())
             XCTFail("Expected client to throw, but it succeeded.")
+        } catch {
+            XCTAssertTrue(true, "An error was thrown as expected.")
+        }
+    }
+    
+    func test_get_throwsError_whenDataIsEmpty() async {
+        let sut = NetworkClient()
+        let url = anyURL()
+        
+        URLProtocolStub.testResponse = responseWithStatus(200)
+        URLProtocolStub.testData = Data()
+        
+        do {
+            _ = try await sut.get(url: url)
+            XCTFail("Expected client to throw due to empty data, but it succeeded.")
         } catch {
             XCTAssertTrue(true, "An error was thrown as expected.")
         }
@@ -53,6 +68,10 @@ final class NetworkClientTests: XCTestCase {
     
     private func responseWithStatus(_ status: Int) -> HTTPURLResponse {
         HTTPURLResponse(url: anyURL(), statusCode: status, httpVersion: nil, headerFields: nil)!
+    }
+    
+    private func anyData() -> Data {
+        "Any".data(using: .utf8)!
     }
     
     final class URLProtocolStub: URLProtocol {
@@ -106,9 +125,15 @@ final class NetworkClient: NetworkClientProtocol {
     
     func get(url: URL) async throws -> Data {
         let (data, response) = try await session.data(from: url)
+        
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw URLError(.badServerResponse)
         }
+        
+        guard !data.isEmpty else {
+            throw URLError(.zeroByteResource)
+        }
+        
         return data
     }
 }
