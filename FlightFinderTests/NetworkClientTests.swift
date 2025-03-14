@@ -9,6 +9,18 @@ import XCTest
 
 final class NetworkClientTests: XCTestCase {
     
+    override func setUp() {
+        super.setUp()
+        
+        URLProtocolStub.startInterceptingRequests()
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        
+        URLProtocolStub.stopInterceptingRequests()
+    }
+    
     func test_get_returnsData_whenStatusCode200() async throws {
         let sut = NetworkClient()
         let url = URL(string: "https://example.com")!
@@ -16,10 +28,8 @@ final class NetworkClientTests: XCTestCase {
         
         URLProtocolStub.testResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
         URLProtocolStub.testData = expectedData
-        
-        URLProtocolStub.startInterceptingRequests()
+
         let data = try await sut.get(url: url)
-        URLProtocolStub.stopInterceptingRequests()
         
         XCTAssertEqual(data, expectedData)
     }
@@ -36,15 +46,13 @@ final class NetworkClientTests: XCTestCase {
                                        httpVersion: nil,
                                        headerFields: nil)
         URLProtocolStub.testResponse = response
-        
-        URLProtocolStub.startInterceptingRequests()
+
         do {
             let _ = try await sut.get(url: url)
             XCTFail("Expected client to throw, but it succeeded.")
         } catch {
             XCTAssertTrue(true, "An error was thrown as expected.")
         }
-        URLProtocolStub.stopInterceptingRequests()
     }
     
     final class URLProtocolStub: URLProtocol {
