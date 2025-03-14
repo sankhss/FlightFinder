@@ -20,8 +20,31 @@ final class NetworkClientTests: XCTestCase {
         URLProtocolStub.startInterceptingRequests()
         let data = try await sut.get(url: url)
         URLProtocolStub.stopInterceptingRequests()
-
+        
         XCTAssertEqual(data, expectedData)
+    }
+    
+    func test_get_throwsError_whenStatusCodeNot200() async {
+        let sut = NetworkClient()
+        
+        let expectedData = "Failure".data(using: .utf8)
+        URLProtocolStub.testData = expectedData
+        
+        let url = URL(string: "https://example.com")!
+        let response = HTTPURLResponse(url: url,
+                                       statusCode: 201,
+                                       httpVersion: nil,
+                                       headerFields: nil)
+        URLProtocolStub.testResponse = response
+        
+        URLProtocolStub.startInterceptingRequests()
+        do {
+            let _ = try await sut.get(url: url)
+            XCTFail("Expected client to throw, but it succeeded.")
+        } catch {
+            XCTAssertTrue(true, "An error was thrown as expected.")
+        }
+        URLProtocolStub.stopInterceptingRequests()
     }
     
     final class URLProtocolStub: URLProtocol {
@@ -49,7 +72,7 @@ final class NetworkClientTests: XCTestCase {
         }
         
         override func stopLoading() { }
-
+        
         static func startInterceptingRequests() {
             URLProtocol.registerClass(URLProtocolStub.self)
         }
@@ -74,7 +97,10 @@ final class NetworkClient: NetworkClientProtocol {
     }
     
     func get(url: URL) async throws -> Data {
-        let (data, _) = try await session.data(from: url)
+        let (data, response) = try await session.data(from: url)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
         return data
     }
 }
