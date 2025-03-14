@@ -23,13 +23,12 @@ final class NetworkClientTests: XCTestCase {
     
     func test_get_returnsData_whenStatusCode200() async throws {
         let sut = NetworkClient()
-        let url = URL(string: "https://example.com")!
-        let expectedData = "Success".data(using: .utf8)
         
-        URLProtocolStub.testResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        URLProtocolStub.testResponse = responseWithStatus(200)
+        let expectedData = "Success".data(using: .utf8)
         URLProtocolStub.testData = expectedData
 
-        let data = try await sut.get(url: url)
+        let data = try await sut.get(url: anyURL())
         
         XCTAssertEqual(data, expectedData)
     }
@@ -37,22 +36,23 @@ final class NetworkClientTests: XCTestCase {
     func test_get_throwsError_whenStatusCodeNot200() async {
         let sut = NetworkClient()
         
-        let expectedData = "Failure".data(using: .utf8)
-        URLProtocolStub.testData = expectedData
-        
-        let url = URL(string: "https://example.com")!
-        let response = HTTPURLResponse(url: url,
-                                       statusCode: 201,
-                                       httpVersion: nil,
-                                       headerFields: nil)
-        URLProtocolStub.testResponse = response
+        URLProtocolStub.testResponse = responseWithStatus(400)
+        URLProtocolStub.testData = Data()
 
         do {
-            let _ = try await sut.get(url: url)
+            _ = try await sut.get(url: anyURL())
             XCTFail("Expected client to throw, but it succeeded.")
         } catch {
             XCTAssertTrue(true, "An error was thrown as expected.")
         }
+    }
+    
+    private func anyURL() -> URL {
+        URL(string: "https://example.com")!
+    }
+    
+    private func responseWithStatus(_ status: Int) -> HTTPURLResponse {
+        HTTPURLResponse(url: anyURL(), statusCode: status, httpVersion: nil, headerFields: nil)!
     }
     
     final class URLProtocolStub: URLProtocol {
