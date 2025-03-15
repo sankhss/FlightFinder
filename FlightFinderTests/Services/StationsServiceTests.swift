@@ -34,40 +34,4 @@ final class StationsServiceTests: XCTestCase {
             return stubbedData ?? Data()
         }
     }
-    
-}
-
-public protocol StationsServiceProtocol {
-    func loadStations() async throws -> [Station]
-}
-
-public final class StationsService: StationsServiceProtocol {
-    private let networkClient: NetworkClientProtocol
-    private let url: URL
-    
-    public init(networkClient: NetworkClientProtocol,
-                url: URL) {
-        self.networkClient = networkClient
-        self.url = url
-    }
-    
-    public func loadStations() async throws -> [Station] {
-        let data = try await networkClient.get(url: url)
-        let decoder = JSONDecoder()
-        let stationsResponse = try decoder.decode(StationsResponse.self, from: data)
-        return stationsResponse.stations
-    }
-    
-    private struct StationsResponse: Codable, Equatable {
-        public let stations: [Station]
-    }
-}
-
-public struct Station: Codable, Equatable {
-    public let code: String
-    public let countryCode: String
-    public let name: String
-    public let latitude: String
-    public let longitude: String
-    public let mobileBoardingPass: Bool
 }
