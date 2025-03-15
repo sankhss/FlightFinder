@@ -108,22 +108,6 @@ final class FlightsServiceTests: XCTestCase {
     private func makeJSONResponse(from response: FlightSearchResponse) -> Data {
         return try! JSONEncoder().encode(response)
     }
-    
-    final class NetworkClientSpy: NetworkClientProtocol {
-        var stubbedData: Data?
-        var stubbedError: Error?
-        var lastURL: URL?
-        
-        func get(url: URL) async throws -> Data {
-            lastURL = url
-            if let error = stubbedError {
-                throw error
-            }
-            
-            return stubbedData ?? Data()
-        }
-    }
-    
 }
 
 public protocol FlightServiceProtocol {

@@ -72,17 +72,4 @@ final class StationsServiceTests: XCTestCase {
     private func stationsURL() -> URL {
         URL(string: "https://mobile-testassets-dev.s3.eu-west-1.amazonaws.com/stations.json")!
     }
-    
-    final class NetworkClientSpy: NetworkClientProtocol {
-        var stubbedData: Data?
-        var stubbedError: Error?
-        
-        func get(url: URL) async throws -> Data {
-            if let error = stubbedError {
-                throw error
-            }
-            
-            return stubbedData ?? Data()
-        }
-    }
 }
