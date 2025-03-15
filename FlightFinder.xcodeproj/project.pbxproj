@@ -17,6 +17,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7E2EF7BB2D85F8F10053D36C /* FlightFinder.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FlightFinder.xctestplan; sourceTree = "<group>"; };
 		7EA36B1F2D8369C900D7DF78 /* FlightFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlightFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EA36B2F2D8369CB00D7DF78 /* FlightFinderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlightFinderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -55,6 +56,7 @@
 		7EA36B162D8369C800D7DF78 = {
 			isa = PBXGroup;
 			children = (
+				7E2EF7BB2D85F8F10053D36C /* FlightFinder.xctestplan */,
 				7EA36B212D8369C900D7DF78 /* FlightFinder */,
 				7EA36B322D8369CB00D7DF78 /* FlightFinderTests */,
 				7EA36B202D8369C900D7DF78 /* Products */,

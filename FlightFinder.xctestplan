@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "5051DE29-E6F3-4214-A44F-E2367268D2CF",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:FlightFinder.xcodeproj",
+      "identifier" : "7EA36B1E2D8369C800D7DF78",
+      "name" : "FlightFinder"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:FlightFinder.xcodeproj",
+        "identifier" : "7EA36B2E2D8369CB00D7DF78",
+        "name" : "FlightFinderTests"
+      }
+    }
+  ],
+  "version" : 1
+}
