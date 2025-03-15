@@ -19,12 +19,9 @@ final class FlightsServiceTests: XCTestCase {
 
         let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
         
-        let response = try await sut.searchFlights(origin: "DUB",
-                                                   destination: "STN",
-                                                   dateOut: "2022-08-09",
-                                                   adt: 1,
-                                                   teen: 0,
-                                                   chd: 0)
+        let response = try await sut.searchFlights(
+            params: .init(origin: "DUB", destination: "STN", dateout: "2022-08-09", adt: 1)
+        )
         
         XCTAssertEqual(response, expectedResponse)
     }
@@ -46,12 +43,9 @@ final class FlightsServiceTests: XCTestCase {
             "chd": "0"
         ]
         
-        _ = try await sut.searchFlights(origin: "DUB",
-                                        destination: "STN",
-                                        dateOut: "2022-08-09",
-                                        adt: 1,
-                                        teen: 0,
-                                        chd: 0)
+        _ = try await sut.searchFlights(
+            params: .init(origin: "DUB", destination: "STN", dateout: "2022-08-09", adt: 1)
+        )
         
         guard let interceptedURL = clientSpy.lastURL,
               let components = URLComponents(url: interceptedURL, resolvingAgainstBaseURL: false),
@@ -117,8 +111,7 @@ final class FlightsServiceTests: XCTestCase {
 }
 
 public protocol FlightServiceProtocol {
-    func searchFlights(origin: String, destination: String, dateOut: String,
-                       adt: Int, teen: Int, chd: Int) async throws -> FlightSearchResponse
+    func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse
 }
 
 public final class FlightService: FlightServiceProtocol {
@@ -130,18 +123,9 @@ public final class FlightService: FlightServiceProtocol {
         self.url = url
     }
     
-    public func searchFlights(origin: String, destination: String, dateOut: String,
-                              adt: Int, teen: Int, chd: Int) async throws -> FlightSearchResponse {
-        
+    public func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
         var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        components.queryItems = [
-            URLQueryItem(name: "origin", value: origin),
-            URLQueryItem(name: "destination", value: destination),
-            URLQueryItem(name: "dateout", value: dateOut),
-            URLQueryItem(name: "adt", value: "\(adt)"),
-            URLQueryItem(name: "teen", value: "\(teen)"),
-            URLQueryItem(name: "chd", value: "\(chd)")
-        ]
+        components.queryItems = params.queryItems
         guard let url = components.url else {
             throw URLError(.badURL)
         }
@@ -178,5 +162,47 @@ public struct FlightSearchResponse: Codable, Equatable {
     
     public struct Fare: Codable, Equatable {
         public let amount: Double
+    }
+}
+
+public struct FlightSearchParameters: Codable {
+    let origin: String
+    let destination: String
+    let dateout: String
+    let adt: Int
+    let teen: Int
+    let chd: Int
+    
+    init(origin: String, destination: String, dateout: String, adt: Int, teen: Int = 0, chd: Int = 0) {
+        self.origin = origin
+        self.destination = destination
+        self.dateout = dateout
+        self.adt = adt
+        self.teen = teen
+        self.chd = chd
+    }
+}
+
+extension Encodable {
+    var queryItems: [URLQueryItem]? {
+        guard let dictionary = try? asDictionary() else { return nil }
+        return dictionary.compactMap { key, value in
+            if let stringValue = value as? String {
+                return URLQueryItem(name: key, value: stringValue)
+            } else if let number = value as? NSNumber {
+                return URLQueryItem(name: key, value: number.stringValue)
+            } else {
+                return nil
+            }
+        }
+    }
+    
+    private func asDictionary() throws -> [String: Any] {
+        let data = try JSONEncoder().encode(self)
+        let dictionaryAny = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        guard let dictionary = dictionaryAny as? [String: Any] else {
+            throw URLError(.cannotParseResponse)
+        }
+        return dictionary
     }
 }
