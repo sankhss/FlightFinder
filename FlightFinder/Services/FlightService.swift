@@ -21,38 +21,29 @@ public final class FlightService: FlightServiceProtocol {
     }
     
     public func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
-        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        components.queryItems = params.queryItems
-        guard let url = components.url else {
-            throw URLError(.badURL)
-        }
-        
-        let data = try await networkClient.get(url: url)
+        let request = APIRequest(url: url, parameters: params.asDictionary, headers: [
+            "Content-Type": "application/json",
+            "client": "ios",
+            "client-version": "3.999.0"
+        ])
+        let data = try await networkClient.get(request)
         let decoder = JSONDecoder()
         return try decoder.decode(FlightSearchResponse.self, from: data)
     }
 }
 
-private extension Encodable {
-    var queryItems: [URLQueryItem]? {
-        guard let dictionary = try? asDictionary() else { return nil }
-        return dictionary.compactMap { key, value in
-            if let stringValue = value as? String {
-                return URLQueryItem(name: key, value: stringValue)
-            } else if let number = value as? NSNumber {
-                return URLQueryItem(name: key, value: number.stringValue)
-            } else {
-                return nil
-            }
+public extension Encodable {
+    var asDictionary: [String: String]? {
+        guard let data = try? JSONEncoder().encode(self),
+              let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []),
+              let dict = jsonObject as? [String: Any] else {
+            return nil
         }
-    }
-    
-    private func asDictionary() throws -> [String: Any] {
-        let data = try JSONEncoder().encode(self)
-        let dictionaryAny = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        guard let dictionary = dictionaryAny as? [String: Any] else {
-            throw URLError(.cannotParseResponse)
+        
+        var result: [String: String] = [:]
+        for (key, value) in dict {
+            result[key] = "\(value)"
         }
-        return dictionary
+        return result
     }
 }

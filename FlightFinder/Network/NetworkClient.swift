@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol NetworkClientProtocol {
-    func get(url: URL) async throws -> Data
+    func get(_ request: APIRequest) async throws -> Data
 }
 
 public final class NetworkClient: NetworkClientProtocol {
@@ -18,8 +18,12 @@ public final class NetworkClient: NetworkClientProtocol {
         self.session = session
     }
     
-    public func get(url: URL) async throws -> Data {
-        let (data, response) = try await session.data(from: url)
+    public func get(_ request: APIRequest) async throws -> Data {
+        guard let urlRequest = request.urlRequest else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, response) = try await session.data(for: urlRequest)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw URLError(.badServerResponse)

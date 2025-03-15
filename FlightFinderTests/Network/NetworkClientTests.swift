@@ -29,7 +29,7 @@ final class NetworkClientTests: XCTestCase {
         let expectedData = anyData()
         URLProtocolStub.testData = expectedData
 
-        let data = try await sut.get(url: anyURL())
+        let data = try await sut.get(anyRequest())
         
         XCTAssertEqual(data, expectedData)
     }
@@ -41,7 +41,7 @@ final class NetworkClientTests: XCTestCase {
         URLProtocolStub.testData = anyData()
 
         do {
-            _ = try await sut.get(url: anyURL())
+            _ = try await sut.get(anyRequest())
             XCTFail("Expected client to throw, but it succeeded.")
         } catch {
             XCTAssertTrue(true, "An error was thrown as expected.")
@@ -56,11 +56,15 @@ final class NetworkClientTests: XCTestCase {
         URLProtocolStub.testData = Data()
         
         do {
-            _ = try await sut.get(url: url)
+            _ = try await sut.get(anyRequest())
             XCTFail("Expected client to throw due to empty data, but it succeeded.")
         } catch {
             XCTAssertTrue(true, "An error was thrown as expected.")
         }
+    }
+    
+    private func anyRequest() -> APIRequest {
+        APIRequest(url: anyURL())
     }
     
     private func anyURL() -> URL {

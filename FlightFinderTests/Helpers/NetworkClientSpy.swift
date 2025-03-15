@@ -13,8 +13,8 @@ final class NetworkClientSpy: NetworkClientProtocol {
     var stubbedError: Error?
     var lastURL: URL?
     
-    func get(url: URL) async throws -> Data {
-        lastURL = url
+    func get(_ request: APIRequest) async throws -> Data {
+        lastURL = request.urlRequest?.url
         if let error = stubbedError {
             throw error
         }

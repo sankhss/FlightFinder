@@ -20,7 +20,7 @@ final class FlightsServiceTests: XCTestCase {
         let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
         
         let response = try await sut.searchFlights(
-            params: .init(origin: "DUB", destination: "STN", dateout: "2022-08-09", adt: 1)
+            params: .init(origin: "DUB", destination: "STN", dateOut: "2022-08-09", adults: 1)
         )
         
         XCTAssertEqual(response, expectedResponse)
@@ -44,7 +44,7 @@ final class FlightsServiceTests: XCTestCase {
         ]
         
         _ = try await sut.searchFlights(
-            params: .init(origin: "DUB", destination: "STN", dateout: "2022-08-09", adt: 1)
+            params: .init(origin: "DUB", destination: "STN", dateOut: "2022-08-09", adults: 1)
         )
         
         guard let interceptedURL = clientSpy.lastURL,
@@ -69,7 +69,7 @@ final class FlightsServiceTests: XCTestCase {
         
         do {
             _ = try await sut.searchFlights(
-                params: .init(origin: "DUB", destination: "STN", dateout: "2022-08-09", adt: 1)
+                params: .init(origin: "DUB", destination: "STN", dateOut: "2022-08-09", adults: 1)
             )
             XCTFail("Expected sut to throw, but it succeeded.")
         } catch {

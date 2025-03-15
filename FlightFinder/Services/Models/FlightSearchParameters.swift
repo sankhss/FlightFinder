@@ -10,17 +10,33 @@ import Foundation
 public struct FlightSearchParameters: Codable {
     let origin: String
     let destination: String
-    let dateout: String
-    let adt: Int
-    let teen: Int
-    let chd: Int
+    let dateOut: String
+    let adults: Int
+    let teens: Int
+    let children: Int
+    private let termsOfUseStatus: TermsOfUseStatus = .agreed
     
-    init(origin: String, destination: String, dateout: String, adt: Int, teen: Int = 0, chd: Int = 0) {
+    enum CodingKeys: String, CodingKey {
+        case origin = "origin"
+        case destination = "destination"
+        case dateOut = "dateout"
+        case adults = "adt"
+        case teens = "teen"
+        case children = "chd"
+        case termsOfUseStatus = "ToUs"
+        
+    }
+    
+    init(origin: String, destination: String, dateOut: String, adults: Int, teens: Int = 0, children: Int = 0) {
         self.origin = origin
         self.destination = destination
-        self.dateout = dateout
-        self.adt = adt
-        self.teen = teen
-        self.chd = chd
+        self.dateOut = dateOut
+        self.adults = adults
+        self.teens = teens
+        self.children = children
+    }
+    
+    private enum TermsOfUseStatus: String, Codable {
+        case agreed = "AGREED"
     }
 }
