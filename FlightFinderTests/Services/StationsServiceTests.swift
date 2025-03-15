@@ -43,6 +43,21 @@ final class StationsServiceTests: XCTestCase {
         XCTAssertEqual(stations, expectedStations)
     }
     
+    func test_loadStations_throwsError_whenNetworkClientFails() async {
+        let clientSpy = NetworkClientSpy()
+        clientSpy.stubbedError = URLError(.badServerResponse)
+        
+        let url = URL(string: "https://mobile-testassets-dev.s3.eu-west-1.amazonaws.com/stations.json")!
+        let sut = StationsService(networkClient: clientSpy, url: url)
+
+        do {
+            _ = try await sut.loadStations()
+            XCTFail("Expected to throw, but it succeeded.")
+        } catch {
+            XCTAssertTrue(true)
+        }
+    }
+    
     private func makeStation(code: String, name: String) -> (model: Station, json: [String: Any]) {
         let model = Station(code: code, name: name)
         let json: [String: Any] = [
@@ -59,8 +74,13 @@ final class StationsServiceTests: XCTestCase {
     
     final class NetworkClientSpy: NetworkClientProtocol {
         var stubbedData: Data?
+        var stubbedError: Error?
         
         func get(url: URL) async throws -> Data {
+            if let error = stubbedError {
+                throw error
+            }
+            
             return stubbedData ?? Data()
         }
     }
