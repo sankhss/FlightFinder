@@ -16,9 +16,8 @@ final class FlightsServiceTests: XCTestCase {
         
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedData = jsonData
-        
-        let url = URL(string: "https://nativeapps.ryanair.com/api/v4/Availability")!
-        let sut = FlightService(networkClient: clientSpy, url: url)
+
+        let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
         
         let response = try await sut.searchFlights(origin: "DUB",
                                                    destination: "STN",
@@ -31,14 +30,12 @@ final class FlightsServiceTests: XCTestCase {
     }
     
     func test_searchFlights_includesCorrectQueryParameters() async throws {
-        
         let clientSpy = NetworkClientSpy()
         
         let expectedResponse = makeFlightSearchResponse()
         clientSpy.stubbedData = makeJSONResponse(from: expectedResponse)
         
-        let url = URL(string: "https://nativeapps.ryanair.com/api/v4/Availability")!
-        let sut = FlightService(networkClient: clientSpy, url: url)
+        let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
         
         let expectedQueries: [String: String] = [
             "origin": "DUB",
@@ -56,21 +53,22 @@ final class FlightsServiceTests: XCTestCase {
                                         teen: 0,
                                         chd: 0)
         
-        guard let lastURL = clientSpy.lastURL else {
-            XCTFail("No request was intercepted")
+        guard let interceptedURL = clientSpy.lastURL,
+              let components = URLComponents(url: interceptedURL, resolvingAgainstBaseURL: false),
+              let queryItems = components.queryItems else {
+            XCTFail("No intercepted request or query items found")
             return
         }
-        
-        guard let components = URLComponents(url: lastURL, resolvingAgainstBaseURL: false),
-        let queryItems = components.queryItems else {
-            XCTFail("Invalid URL query items")
-            return
-        }
+
+        let queryDict = Dictionary(uniqueKeysWithValues: queryItems.map { ($0.name, $0.value ?? "") })
         
         for (key, expectedValue) in expectedQueries {
-            let value = queryItems.first(where: { $0.name == key })?.value
-            XCTAssertEqual(value, expectedValue, "Query parameter \(key) should be \(expectedValue)")
+            XCTAssertEqual(queryDict[key], expectedValue, "Query parameter \(key) should be \(expectedValue)")
         }
+    }
+    
+    private func flightSearchURL() -> URL {
+        URL(string: "https://nativeapps.ryanair.com/api/v4/Availability")!
     }
     
     private func makeFlightSearchResponse() -> FlightSearchResponse {
