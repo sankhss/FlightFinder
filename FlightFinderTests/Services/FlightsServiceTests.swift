@@ -16,7 +16,7 @@ final class FlightsServiceTests: XCTestCase {
         
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedData = jsonData
-
+        
         let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
         
         let response = try await sut.searchFlights(
@@ -53,11 +53,27 @@ final class FlightsServiceTests: XCTestCase {
             XCTFail("No intercepted request or query items found")
             return
         }
-
+        
         let queryDict = Dictionary(uniqueKeysWithValues: queryItems.map { ($0.name, $0.value ?? "") })
         
         for (key, expectedValue) in expectedQueries {
             XCTAssertEqual(queryDict[key], expectedValue, "Query parameter \(key) should be \(expectedValue)")
+        }
+    }
+    
+    func test_searchFlights_throwsError_whenNetworkClientFails() async {
+        let clientSpy = NetworkClientSpy()
+        clientSpy.stubbedError = URLError(.badServerResponse)
+        
+        let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
+        
+        do {
+            _ = try await sut.searchFlights(
+                params: .init(origin: "DUB", destination: "STN", dateout: "2022-08-09", adt: 1)
+            )
+            XCTFail("Expected sut to throw, but it succeeded.")
+        } catch {
+            XCTAssertTrue(true)
         }
     }
     
