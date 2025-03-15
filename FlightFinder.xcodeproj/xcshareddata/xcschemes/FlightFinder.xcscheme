@@ -57,6 +57,17 @@
                ReferencedContainer = "container:FlightFinder.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7E2EF7E72D8603600053D36C"
+               BuildableName = "FlightFinderEndToEndTests.xctest"
+               BlueprintName = "FlightFinderEndToEndTests"
+               ReferencedContainer = "container:FlightFinder.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

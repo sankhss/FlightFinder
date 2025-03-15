@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "5E4402BE-CD1C-4970-BB7E-4A2F60873124",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : false,
+      "target" : {
+        "containerPath" : "container:FlightFinder.xcodeproj",
+        "identifier" : "7E2EF7E72D8603600053D36C",
+        "name" : "FlightFinderEndToEndTests"
+      }
+    }
+  ],
+  "version" : 1
+}

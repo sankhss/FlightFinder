@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
+		7E2EF7EC2D8603600053D36C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7EA36B172D8369C800D7DF78 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7EA36B1E2D8369C800D7DF78;
+			remoteInfo = FlightFinder;
+		};
 		7EA36B302D8369CB00D7DF78 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7EA36B172D8369C800D7DF78 /* Project object */;
@@ -18,11 +25,18 @@
 
 /* Begin PBXFileReference section */
 		7E2EF7BB2D85F8F10053D36C /* FlightFinder.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FlightFinder.xctestplan; sourceTree = "<group>"; };
+		7E2EF7E82D8603600053D36C /* FlightFinderEndToEndTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlightFinderEndToEndTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		7E2EF7F12D8605260053D36C /* FlightFinderEndToEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = FlightFinderEndToEndTests.xctestplan; sourceTree = "<group>"; };
 		7EA36B1F2D8369C900D7DF78 /* FlightFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlightFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7EA36B2F2D8369CB00D7DF78 /* FlightFinderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlightFinderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		7E2EF7E92D8603600053D36C /* FlightFinderEndToEndTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FlightFinderEndToEndTests;
+			sourceTree = "<group>";
+		};
 		7EA36B212D8369C900D7DF78 /* FlightFinder */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = FlightFinder;
@@ -36,6 +50,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		7E2EF7E52D8603600053D36C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EA36B1C2D8369C800D7DF78 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -56,9 +77,11 @@
 		7EA36B162D8369C800D7DF78 = {
 			isa = PBXGroup;
 			children = (
+				7E2EF7F12D8605260053D36C /* FlightFinderEndToEndTests.xctestplan */,
 				7E2EF7BB2D85F8F10053D36C /* FlightFinder.xctestplan */,
 				7EA36B212D8369C900D7DF78 /* FlightFinder */,
 				7EA36B322D8369CB00D7DF78 /* FlightFinderTests */,
+				7E2EF7E92D8603600053D36C /* FlightFinderEndToEndTests */,
 				7EA36B202D8369C900D7DF78 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -68,6 +91,7 @@
 			children = (
 				7EA36B1F2D8369C900D7DF78 /* FlightFinder.app */,
 				7EA36B2F2D8369CB00D7DF78 /* FlightFinderTests.xctest */,
+				7E2EF7E82D8603600053D36C /* FlightFinderEndToEndTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,6 +99,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		7E2EF7E72D8603600053D36C /* FlightFinderEndToEndTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7E2EF7EE2D8603600053D36C /* Build configuration list for PBXNativeTarget "FlightFinderEndToEndTests" */;
+			buildPhases = (
+				7E2EF7E42D8603600053D36C /* Sources */,
+				7E2EF7E52D8603600053D36C /* Frameworks */,
+				7E2EF7E62D8603600053D36C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7E2EF7ED2D8603600053D36C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				7E2EF7E92D8603600053D36C /* FlightFinderEndToEndTests */,
+			);
+			name = FlightFinderEndToEndTests;
+			packageProductDependencies = (
+			);
+			productName = FlightFinderEndToEndTests;
+			productReference = 7E2EF7E82D8603600053D36C /* FlightFinderEndToEndTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		7EA36B1E2D8369C800D7DF78 /* FlightFinder */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7EA36B432D8369CB00D7DF78 /* Build configuration list for PBXNativeTarget "FlightFinder" */;
@@ -130,6 +177,10 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					7E2EF7E72D8603600053D36C = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 7EA36B1E2D8369C800D7DF78;
+					};
 					7EA36B1E2D8369C800D7DF78 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -156,11 +207,19 @@
 			targets = (
 				7EA36B1E2D8369C800D7DF78 /* FlightFinder */,
 				7EA36B2E2D8369CB00D7DF78 /* FlightFinderTests */,
+				7E2EF7E72D8603600053D36C /* FlightFinderEndToEndTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		7E2EF7E62D8603600053D36C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EA36B1D2D8369C800D7DF78 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -178,6 +237,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		7E2EF7E42D8603600053D36C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7EA36B1B2D8369C800D7DF78 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -195,6 +261,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		7E2EF7ED2D8603600053D36C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7EA36B1E2D8369C800D7DF78 /* FlightFinder */;
+			targetProxy = 7E2EF7EC2D8603600053D36C /* PBXContainerItemProxy */;
+		};
 		7EA36B312D8369CB00D7DF78 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7EA36B1E2D8369C800D7DF78 /* FlightFinder */;
@@ -203,6 +274,42 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		7E2EF7EF2D8603600053D36C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 22W542X85L;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ssilva.FlightFinderEndToEndTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlightFinder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FlightFinder";
+			};
+			name = Debug;
+		};
+		7E2EF7F02D8603600053D36C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 22W542X85L;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ssilva.FlightFinderEndToEndTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FlightFinder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/FlightFinder";
+			};
+			name = Release;
+		};
 		7EA36B412D8369CB00D7DF78 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -432,6 +539,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		7E2EF7EE2D8603600053D36C /* Build configuration list for PBXNativeTarget "FlightFinderEndToEndTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7E2EF7EF2D8603600053D36C /* Debug */,
+				7E2EF7F02D8603600053D36C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		7EA36B1A2D8369C800D7DF78 /* Build configuration list for PBXProject "FlightFinder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
