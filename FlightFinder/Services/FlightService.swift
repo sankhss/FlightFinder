@@ -15,17 +15,13 @@ public final class FlightService: FlightServiceProtocol {
     private let networkClient: NetworkClientProtocol
     private let url: URL
     
-    public init(networkClient: NetworkClientProtocol, url: URL) {
+    public init(networkClient: NetworkClientProtocol, url: URL = APIConstants.Endpoints.flightAvailability) {
         self.networkClient = networkClient
         self.url = url
     }
     
     public func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
-        let request = APIRequest(url: url, parameters: params.asDictionary, headers: [
-            "Content-Type": "application/json",
-            "client": "ios",
-            "client-version": "3.999.0"
-        ])
+        let request = APIRequest(url: url, parameters: params.asDictionary)
         let data = try await networkClient.get(request)
         let decoder = JSONDecoder()
         return try decoder.decode(FlightSearchResponse.self, from: data)

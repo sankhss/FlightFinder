@@ -14,7 +14,7 @@ public struct APIRequest {
 
     init(url: URL, 
          parameters: [String: String]? = nil, 
-         headers: [String: String]? = nil) {
+         headers: [String: String]? = APIConstants.headers) {
         self.url = url
         self.parameters = parameters
         self.headers = headers

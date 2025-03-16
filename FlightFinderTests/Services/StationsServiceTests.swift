@@ -16,7 +16,7 @@ final class StationsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedData = jsonData
 
-        let sut = StationsService(networkClient: clientSpy, url: stationsURL())
+        let sut = StationsService(client: clientSpy, url: stationsURL())
         
         do {
             _ = try await sut.loadStations()
@@ -35,7 +35,7 @@ final class StationsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedData = jsonData
         
-        let sut = StationsService(networkClient: clientSpy, url: stationsURL())
+        let sut = StationsService(client: clientSpy, url: stationsURL())
         
         let stations = try await sut.loadStations()
         XCTAssertEqual(stations, expectedStations)
@@ -45,7 +45,7 @@ final class StationsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedError = URLError(.badServerResponse)
         
-        let sut = StationsService(networkClient: clientSpy, url: stationsURL())
+        let sut = StationsService(client: clientSpy, url: stationsURL())
 
         do {
             _ = try await sut.loadStations()

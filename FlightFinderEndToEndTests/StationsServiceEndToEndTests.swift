@@ -11,9 +11,8 @@ import XCTest
 final class StationsServiceEndToEndTests: XCTestCase {
     
     func test_endToEndServerGETStationsResult() async throws {
-        let url = URL(string: "https://mobile-testassets-dev.s3.eu-west-1.amazonaws.com/stations.json")!
         let client = NetworkClient()
-        let service = StationsService(networkClient: client, url: url)
+        let service = StationsService(client: client, url: APIConstants.Endpoints.stations)
 
         let stations = try await service.loadStations()
         

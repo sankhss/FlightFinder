@@ -15,18 +15,14 @@ public final class StationsService: StationsServiceProtocol {
     private let networkClient: NetworkClientProtocol
     private let url: URL
     
-    public init(networkClient: NetworkClientProtocol,
-                url: URL) {
-        self.networkClient = networkClient
+    public init(client: NetworkClientProtocol,
+                url: URL = APIConstants.Endpoints.stations) {
+        self.networkClient = client
         self.url = url
     }
     
     public func loadStations() async throws -> [Station] {
-        let request = APIRequest(url: url, headers: [
-            "Content-Type": "application/json",
-            "client": "ios",
-            "client-version": "3.999.0"
-        ])
+        let request = APIRequest(url: APIConstants.Endpoints.stations)
         let data = try await networkClient.get(request)
         let decoder = JSONDecoder()
         let stationsResponse = try decoder.decode(StationsResponse.self, from: data)
