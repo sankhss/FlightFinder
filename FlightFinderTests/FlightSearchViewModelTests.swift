@@ -43,12 +43,35 @@ final class FlightSearchViewModelTests: XCTestCase {
         XCTAssertEqual(spy.loadCallCount, 1)
     }
     
+    func test_loadStations_loadingIndicatorTransitions() async throws {
+        let spy = StationsServiceSpy()
+        spy.delay = 2
+        
+        let expectedStations = [Station(code: "AAR", name: "Aarhus")]
+        spy.result = .success(expectedStations)
+        
+        let sut = FlightSearchViewModel(stationsService: spy)
+        
+        let task = Task { await sut.loadStations() }
+        await Task.yield()
+
+        XCTAssertTrue(sut.isStationsLoading, "Expected loading state to be true after starting loadStations()")
+        
+        await task.value
+        
+        XCTAssertFalse(sut.isStationsLoading, "Expected loading state to be false after loadStations() completes")
+    }
+    
     final class StationsServiceSpy: StationsServiceProtocol {
         var result: Result<[Station], Error>?
         var loadCallCount = 0
+        var delay: Int = 0
         
         func loadStations() async throws -> [Station] {
             loadCallCount += 1
+            
+            try await Task.sleep(for: .seconds(delay))
+            
             switch result {
             case .success(let stations):
                 return stations
@@ -77,17 +100,16 @@ final class FlightSearchViewModel: ObservableObject {
     }
 
     func loadStations() async {
-        self.isStationsLoading = true
-        self.stationsError = nil
-        
+        isStationsLoading = true
+        stationsError = nil
         do {
-            let loadedStations = try await stationsService.loadStations()
-            self.stations = loadedStations
+            let loaded = try await stationsService.loadStations()
+            stations = loaded
         } catch {
-            self.stationsError = error.localizedDescription
+            stationsError = error.localizedDescription
+            stations = []
         }
-        
-        self.isStationsLoading = false
+        isStationsLoading = false
     }
 }
 
