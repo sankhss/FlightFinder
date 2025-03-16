@@ -12,21 +12,35 @@ import XCTest
 final class FlightSearchViewModelTests: XCTestCase {
     
     func test_loadStations_success_updatesStations() async {
-        let stationsService = StationsServiceSpy()
+        let spy = StationsServiceSpy()
         let expectedStations = [
             Station(code: "AAR", name: "Aarhus"),
             Station(code: "CPH", name: "Copenhagen")
         ]
-        stationsService.result = .success(expectedStations)
+        spy.result = .success(expectedStations)
         
-        let sut = FlightSearchViewModel(stationsService: stationsService)
+        let sut = FlightSearchViewModel(stationsService: spy)
         
         await sut.loadStations()
         
         XCTAssertEqual(sut.stations, expectedStations)
         XCTAssertFalse(sut.isStationsLoading)
         XCTAssertNil(sut.stationsError)
-        XCTAssertEqual(stationsService.loadCallCount, 1)
+        XCTAssertEqual(spy.loadCallCount, 1)
+    }
+    
+    func test_loadStations_failure_setsErrorState() async {
+        let spy = StationsServiceSpy()
+        spy.result = .failure(URLError(.cannotConnectToHost))
+        
+        let sut = FlightSearchViewModel(stationsService: spy)
+        
+        await sut.loadStations()
+        
+        XCTAssertTrue(sut.stations.isEmpty)
+        XCTAssertFalse(sut.isStationsLoading)
+        XCTAssertNotNil(sut.stationsError)
+        XCTAssertEqual(spy.loadCallCount, 1)
     }
     
     final class StationsServiceSpy: StationsServiceProtocol {
