@@ -17,7 +17,7 @@ final class FlightsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedData = jsonData
         
-        let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
+        let sut = FlightService(networkClient: clientSpy, url: anyURL())
         
         let response = try await sut.searchFlights(
             params: .init(origin: "DUB", destination: "STN", dateOut: "2022-08-09", adults: 1)
@@ -32,7 +32,7 @@ final class FlightsServiceTests: XCTestCase {
         let expectedResponse = makeFlightSearchResponse()
         clientSpy.stubbedData = makeJSONResponse(from: expectedResponse)
         
-        let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
+        let sut = FlightService(networkClient: clientSpy, url: anyURL())
         
         let expectedQueries: [String: String] = [
             "origin": "DUB",
@@ -65,7 +65,7 @@ final class FlightsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedError = URLError(.badServerResponse)
         
-        let sut = FlightService(networkClient: clientSpy, url: flightSearchURL())
+        let sut = FlightService(networkClient: clientSpy, url: anyURL())
         
         do {
             _ = try await sut.searchFlights(
@@ -75,10 +75,6 @@ final class FlightsServiceTests: XCTestCase {
         } catch {
             XCTAssertTrue(true)
         }
-    }
-    
-    private func flightSearchURL() -> URL {
-        URL(string: "https://nativeapps.ryanair.com/api/v4/Availability")!
     }
     
     private func makeFlightSearchResponse() -> FlightSearchResponse {

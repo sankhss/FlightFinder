@@ -50,8 +50,7 @@ final class NetworkClientTests: XCTestCase {
     
     func test_get_throwsError_whenDataIsEmpty() async {
         let sut = NetworkClient()
-        let url = anyURL()
-        
+
         URLProtocolStub.testResponse = responseWithStatus(200)
         URLProtocolStub.testData = Data()
         
@@ -65,10 +64,6 @@ final class NetworkClientTests: XCTestCase {
     
     private func anyRequest() -> APIRequest {
         APIRequest(url: anyURL())
-    }
-    
-    private func anyURL() -> URL {
-        URL(string: "https://example.com")!
     }
     
     private func responseWithStatus(_ status: Int) -> HTTPURLResponse {

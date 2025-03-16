@@ -16,7 +16,7 @@ final class StationsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedData = jsonData
 
-        let sut = StationsService(client: clientSpy, url: stationsURL())
+        let sut = StationsService(client: clientSpy, url: anyURL())
         
         do {
             _ = try await sut.loadStations()
@@ -35,7 +35,7 @@ final class StationsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedData = jsonData
         
-        let sut = StationsService(client: clientSpy, url: stationsURL())
+        let sut = StationsService(client: clientSpy, url: anyURL())
         
         let stations = try await sut.loadStations()
         XCTAssertEqual(stations, expectedStations)
@@ -45,7 +45,7 @@ final class StationsServiceTests: XCTestCase {
         let clientSpy = NetworkClientSpy()
         clientSpy.stubbedError = URLError(.badServerResponse)
         
-        let sut = StationsService(client: clientSpy, url: stationsURL())
+        let sut = StationsService(client: clientSpy, url: anyURL())
 
         do {
             _ = try await sut.loadStations()
@@ -67,9 +67,5 @@ final class StationsServiceTests: XCTestCase {
     private func makeStationsJSON(_ items: [[String: Any]]) -> Data {
         let json = ["stations": items]
         return try! JSONSerialization.data(withJSONObject: json, options: [])
-    }
-    
-    private func stationsURL() -> URL {
-        URL(string: "https://mobile-testassets-dev.s3.eu-west-1.amazonaws.com/stations.json")!
     }
 }
