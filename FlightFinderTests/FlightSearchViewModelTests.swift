@@ -99,6 +99,7 @@ final class FlightSearchViewModelTests: XCTestCase {
         
         XCTAssertEqual(sut.flightResults, [expectedItem])
         XCTAssertFalse(sut.isFlightSearchLoading)
+        XCTAssertNil(sut.flightsError)
         XCTAssertEqual(spy.searchCallCount, 1)
     }
     
@@ -137,6 +138,18 @@ final class FlightSearchViewModelTests: XCTestCase {
         await task.value
         
         XCTAssertFalse(sut.isFlightSearchLoading, "Expected loading state to be false after searchFlights() completes")
+    }
+    
+    func test_searchFlights_failure_setsErrorState() async {
+        let (sut, _, spy) = makeSUT()
+        spy.result = .failure(URLError(.cannotConnectToHost))
+        
+        await sut.searchFlights()
+        
+        XCTAssertTrue(sut.flightResults.isEmpty)
+        XCTAssertFalse(sut.isFlightSearchLoading)
+        XCTAssertNotNil(sut.flightsError)
+        XCTAssertEqual(spy.searchCallCount, 1)
     }
     
     private func makeSUT() -> (sut: FlightSearchViewModel, stationsSpy: StationsServiceSpy, flightSpy: FlightServiceSpy) {
@@ -207,6 +220,7 @@ final class FlightSearchViewModel: ObservableObject {
     
     @Published var flightResults: [FlightListItem] = []
     @Published var isFlightSearchLoading: Bool = false
+    @Published var flightsError: String?
     
     private let stationsService: StationsServiceProtocol
     private let flightService: FlightServiceProtocol
@@ -237,6 +251,7 @@ final class FlightSearchViewModel: ObservableObject {
     
     func searchFlights() async {
         isFlightSearchLoading = true
+        flightsError = nil
         
         let params = FlightSearchParameters(origin: origin,
                                             destination: destination,
@@ -261,6 +276,7 @@ final class FlightSearchViewModel: ObservableObject {
             flightResults = items
         } catch {
             flightResults = []
+            flightsError = error.localizedDescription
         }
         isFlightSearchLoading = false
     }
