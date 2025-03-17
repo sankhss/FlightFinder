@@ -98,7 +98,45 @@ final class FlightSearchViewModelTests: XCTestCase {
                                                                 regularFare: 105.99)
         
         XCTAssertEqual(sut.flightResults, [expectedItem])
+        XCTAssertFalse(sut.isFlightSearchLoading)
         XCTAssertEqual(spy.searchCallCount, 1)
+    }
+    
+    func test_searchFlights_loadingIndicatorTransitions() async throws {
+        let flightResponse = FlightSearchResponse(currency: "EUR", trips: [
+            FlightSearchResponse.Trip(
+                origin: "DUB",
+                destination: "STN",
+                dates: [
+                    FlightSearchResponse.FlightDate(
+                        dateOut: "2022-08-09T00:00:00.000",
+                        flights: [
+                            FlightSearchResponse.Flight(
+                                flightNumber: "FR123",
+                                regularFare: FlightSearchResponse.RegularFare(
+                                    fares: [
+                                        FlightSearchResponse.Fare(amount: 105.99)
+                                    ]
+                                )
+                            )
+                        ]
+                    )
+                ]
+            )
+        ])
+        
+        let (sut, _, spy) = makeSUT()
+        spy.delay = 2
+        spy.result = .success(flightResponse)
+        
+        let task = Task { await sut.searchFlights()}
+        await Task.yield()
+        
+        XCTAssertTrue(sut.isFlightSearchLoading, "Expected loading state to be true after starting searchFlights()")
+        
+        await task.value
+        
+        XCTAssertFalse(sut.isFlightSearchLoading, "Expected loading state to be false after searchFlights() completes")
     }
     
     private func makeSUT() -> (sut: FlightSearchViewModel, stationsSpy: StationsServiceSpy, flightSpy: FlightServiceSpy) {
@@ -132,9 +170,13 @@ final class FlightSearchViewModelTests: XCTestCase {
     final class FlightServiceSpy: FlightServiceProtocol {
         var result: Result<FlightSearchResponse, Error>?
         var searchCallCount = 0
+        var delay: Int = 0
         
         func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
             searchCallCount += 1
+            
+            try await Task.sleep(for: .seconds(delay))
+            
             switch result {
             case .success(let response):
                 return response
@@ -164,6 +206,7 @@ final class FlightSearchViewModel: ObservableObject {
     @Published var children: Int = 0
     
     @Published var flightResults: [FlightListItem] = []
+    @Published var isFlightSearchLoading: Bool = false
     
     private let stationsService: StationsServiceProtocol
     private let flightService: FlightServiceProtocol
@@ -193,6 +236,8 @@ final class FlightSearchViewModel: ObservableObject {
     }
     
     func searchFlights() async {
+        isFlightSearchLoading = true
+        
         let params = FlightSearchParameters(origin: origin,
                                             destination: destination,
                                             dateOut: dateOutString,
@@ -217,6 +262,7 @@ final class FlightSearchViewModel: ObservableObject {
         } catch {
             flightResults = []
         }
+        isFlightSearchLoading = false
     }
     
     public struct FlightListItem: Identifiable, Equatable {
