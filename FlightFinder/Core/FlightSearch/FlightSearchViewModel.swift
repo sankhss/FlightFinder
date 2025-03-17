@@ -47,10 +47,14 @@ public final class FlightSearchViewModel: ObservableObject {
     }
     
     private var dateOutString: String {
+        FlightSearchViewModel.dateFormatter.string(from: dateOut)
+    }
+
+    private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: dateOut)
-    }
+        return formatter
+    }()
     
     public func searchFlights() async {
         isFlightSearchLoading = true
