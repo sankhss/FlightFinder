@@ -25,20 +25,22 @@ struct FlightSearchView: View {
                 List {
                     searchForm
                     
-                    Section {
-                        if !viewModel.flightResults.isEmpty {
-                            Section(header: Text("Available Flights")) {
-                                ForEach(viewModel.flightResults) { flight in
-                                    FlightResultRow(flight: flight)
+                    if hasSearched {
+                        Section {
+                            if !viewModel.flightResults.isEmpty {
+                                Section(header: Text("Available Flights")) {
+                                    ForEach(viewModel.flightResults) { flight in
+                                        FlightResultRow(flight: flight)
+                                    }
+                                    .id("flightResultsStart")
                                 }
-                                .id("flightResultsStart")
-                            }
-                        } else if !viewModel.isFlightSearchLoading {
-                            Section {
-                                Text("No flights found")
-                                    .foregroundStyle(.secondary)
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                                    .padding()
+                            } else if !viewModel.isFlightSearchLoading {
+                                Section {
+                                    Text("No flights found")
+                                        .foregroundStyle(.secondary)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                        .padding()
+                                }
                             }
                         }
                     }
