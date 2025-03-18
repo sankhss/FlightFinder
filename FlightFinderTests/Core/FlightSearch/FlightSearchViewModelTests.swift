@@ -82,8 +82,8 @@ final class FlightSearchViewModelTests: XCTestCase {
         let (sut, _, spy) = makeSUT()
         spy.result = .success(flightResponse)
 
-        sut.origin = "DUB"
-        sut.destination = "STN"
+        sut.origin = Station(code: "DUB", name: "Dublin")
+        sut.destination = Station(code: "STN", name: "London Stansted")
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         sut.dateOut = formatter.date(from: "2022-08-09") ?? Date()
@@ -127,10 +127,13 @@ final class FlightSearchViewModelTests: XCTestCase {
         ])
         
         let (sut, _, spy) = makeSUT()
+        sut.origin = Station(code: "DUB", name: "Dublin")
+        sut.destination = Station(code: "STN", name: "London Stansted")
         spy.delay = 2
         spy.result = .success(flightResponse)
         
-        let task = Task { await sut.searchFlights()}
+        
+        let task = Task { await sut.searchFlights() }
         await Task.yield()
         
         XCTAssertTrue(sut.isFlightSearchLoading, "Expected loading state to be true after starting searchFlights()")
@@ -142,6 +145,8 @@ final class FlightSearchViewModelTests: XCTestCase {
     
     func test_searchFlights_failure_setsErrorState() async {
         let (sut, _, spy) = makeSUT()
+        sut.origin = Station(code: "DUB", name: "Dublin")
+        sut.destination = Station(code: "STN", name: "London Stansted")
         spy.result = .failure(URLError(.cannotConnectToHost))
         
         await sut.searchFlights()

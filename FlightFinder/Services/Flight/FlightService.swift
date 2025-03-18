@@ -15,8 +15,8 @@ public final class FlightService: FlightServiceProtocol {
     private let networkClient: NetworkClientProtocol
     private let url: URL
     
-    public init(networkClient: NetworkClientProtocol, url: URL = APIConstants.Endpoints.flightAvailability) {
-        self.networkClient = networkClient
+    public init(client: NetworkClientProtocol, url: URL = APIConstants.Endpoints.flightAvailability) {
+        self.networkClient = client
         self.url = url
     }
     

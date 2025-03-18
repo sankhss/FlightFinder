@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StationSearchView: View {
     let stations: [Station]
-    @Binding var selectedStation: String
+    @Binding var selectedStation: Station?
     @State private var searchText: String = ""
     
     @Environment(\.dismiss) private var dismiss
@@ -30,7 +30,7 @@ struct StationSearchView: View {
             List {
                 ForEach(filteredStations, id: \.code) { station in
                     Button(action: {
-                        selectedStation = station.code
+                        selectedStation = station
                         dismiss()
                     }) {
                         Text("\(station.name) (\(station.code))")
@@ -56,9 +56,9 @@ struct StationSearchView: View {
 }
 
 #Preview {
-    @Previewable @State var selectedStation: String = ""
+    @Previewable @State var selectedStation: Station?
     
-    return StationSearchView(
+    StationSearchView(
         stations: [
             Station(code: "DUB", name: "Dublin"),
             Station(code: "STN", name: "London Stansted"),

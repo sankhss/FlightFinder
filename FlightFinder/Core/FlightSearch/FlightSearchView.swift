@@ -29,7 +29,7 @@ struct FlightSearchView: View {
                 
                 stationPicker(title: "To", selection: $viewModel.destination)
                     .onTapGesture {
-                        if viewModel.origin.isEmpty {
+                        if viewModel.origin == nil {
                             highlightOriginField = true
                         } else {
                             isSelectingDestination = true
@@ -53,6 +53,7 @@ struct FlightSearchView: View {
             .navigationTitle("Find Flights")
             .fullScreenCover(isPresented: $isSelectingOrigin) {
                 StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.origin)
+                    .onDisappear { highlightOriginField = false }
             }
             .fullScreenCover(isPresented: $isSelectingDestination) {
                 StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.destination)
@@ -63,13 +64,12 @@ struct FlightSearchView: View {
         }
     }
     
-    private func stationPicker(title: String, selection: Binding<String>, highlight: Bool = false) -> some View {
-        Text(title)
+    private func stationPicker(title: String, selection: Binding<Station?>, highlight: Bool = false) -> some View {
+        Text(selection.wrappedValue?.name ?? title)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
-            .font(.title3)
-            .fontWeight(.semibold)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(selection.wrappedValue != nil ? .primary : .secondary)
+            .addFormLabelStyle()
             .addFieldBackground(highlighted: highlight)
             .removeListRowFormatting()
     }
@@ -115,9 +115,9 @@ struct FlightSearchView: View {
                 Spacer()
             }
         }
-        .disabled(viewModel.isFlightSearchLoading || viewModel.origin.isEmpty || viewModel.destination.isEmpty)
+        .disabled(viewModel.isFlightSearchLoading || viewModel.origin == nil || viewModel.destination == nil)
         .frame(height: 50)
-        .background(viewModel.isFlightSearchLoading || viewModel.origin.isEmpty || viewModel.destination.isEmpty ? Color.gray : Color.blue)
+        .background(viewModel.isFlightSearchLoading || viewModel.origin == nil || viewModel.destination == nil ? Color.gray : Color.blue)
         .cornerRadius(10)
         .removeListRowFormatting()
     }

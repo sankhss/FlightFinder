@@ -14,8 +14,8 @@ public final class FlightSearchViewModel: ObservableObject {
     @Published var isStationsLoading: Bool = false
     @Published var stationsError: String?
     
-    @Published var origin: String = ""
-    @Published var destination: String = ""
+    @Published var origin: Station?
+    @Published var destination: Station?
     @Published var dateOut: Date = Date()
     @Published var adults: Int = 1
     @Published var teens: Int = 0
@@ -57,11 +57,13 @@ public final class FlightSearchViewModel: ObservableObject {
     }()
     
     public func searchFlights() async {
+        guard let origin, let destination else { return }
+        
         isFlightSearchLoading = true
         flightsError = nil
         
-        let params = FlightSearchParameters(origin: origin,
-                                            destination: destination,
+        let params = FlightSearchParameters(origin: origin.code,
+                                            destination: destination.code,
                                             dateOut: dateOutString,
                                             adults: adults,
                                             teens: teens,
