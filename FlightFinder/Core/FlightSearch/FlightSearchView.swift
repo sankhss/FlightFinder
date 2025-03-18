@@ -177,3 +177,10 @@ struct FlightSearchView: View {
         flightService: MockFlightService()
     ))
 }
+
+#Preview("Error") {
+    FlightSearchView(viewModel: FlightSearchViewModel(
+        stationsService: MockStationsService(),
+        flightService: MockFlightService(showError: true)
+    ))
+}

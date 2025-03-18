@@ -8,7 +8,19 @@
 import Foundation
 
 final class MockFlightService: FlightServiceProtocol {
+    
+    let showError: Bool
+    
+    init(showError: Bool = false) {
+        self.showError = showError
+    }
+    
     func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
+        
+        if showError {
+            throw URLError(.cannotConnectToHost)
+        }
+        
         return FlightSearchResponse(currency: "EUR", trips: [
             FlightSearchResponse.Trip(
                 origin: "DUB",
