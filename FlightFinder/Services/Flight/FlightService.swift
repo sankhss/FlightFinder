@@ -22,9 +22,14 @@ public final class FlightService: FlightServiceProtocol {
     
     public func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
         let request = APIRequest(url: url, parameters: params.asDictionary)
-        let data = try await networkClient.get(request)
+        let data = try await mapNetworkError {
+            try await networkClient.get(request)
+        }
+        
         let decoder = JSONDecoder()
-        return try decoder.decode(FlightSearchResponse.self, from: data)
+        return try mapDecodingError {
+            try decoder.decode(FlightSearchResponse.self, from: data)
+        }
     }
 }
 

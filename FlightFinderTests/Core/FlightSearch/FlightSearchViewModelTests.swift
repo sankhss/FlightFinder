@@ -23,7 +23,7 @@ final class FlightSearchViewModelTests: XCTestCase {
         
         XCTAssertEqual(sut.stations, expectedStations)
         XCTAssertFalse(sut.isStationsLoading)
-        XCTAssertNil(sut.stationsError)
+        XCTAssertNil(sut.errorMessage)
         XCTAssertEqual(spy.loadCallCount, 1)
     }
     
@@ -35,7 +35,7 @@ final class FlightSearchViewModelTests: XCTestCase {
         
         XCTAssertTrue(sut.stations.isEmpty)
         XCTAssertFalse(sut.isStationsLoading)
-        XCTAssertNotNil(sut.stationsError)
+        XCTAssertNotNil(sut.errorMessage)
         XCTAssertEqual(spy.loadCallCount, 1)
     }
     
@@ -99,7 +99,7 @@ final class FlightSearchViewModelTests: XCTestCase {
         
         XCTAssertEqual(sut.flightResults, [expectedItem])
         XCTAssertFalse(sut.isFlightSearchLoading)
-        XCTAssertNil(sut.flightsError)
+        XCTAssertNil(sut.errorMessage)
         XCTAssertEqual(spy.searchCallCount, 1)
     }
     
@@ -152,7 +152,7 @@ final class FlightSearchViewModelTests: XCTestCase {
         
         XCTAssertTrue(sut.flightResults.isEmpty)
         XCTAssertFalse(sut.isFlightSearchLoading)
-        XCTAssertNotNil(sut.flightsError)
+        XCTAssertNotNil(sut.errorMessage)
         XCTAssertEqual(spy.searchCallCount, 1)
     }
     

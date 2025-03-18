@@ -22,10 +22,16 @@ public final class StationsService: StationsServiceProtocol {
     }
     
     public func loadStations() async throws -> [Station] {
-        let request = APIRequest(url: APIConstants.Endpoints.stations)
-        let data = try await networkClient.get(request)
+        let request = APIRequest(url: url)
+        let data = try await mapNetworkError {
+            try await networkClient.get(request)
+        }
+        
         let decoder = JSONDecoder()
-        let stationsResponse = try decoder.decode(StationsResponse.self, from: data)
+        let stationsResponse = try mapDecodingError {
+            try decoder.decode(StationsResponse.self, from: data)
+        }
+        
         return stationsResponse.stations
     }
     

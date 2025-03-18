@@ -18,7 +18,7 @@ final class MockFlightService: FlightServiceProtocol {
     func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
         
         if showError {
-            throw URLError(.cannotConnectToHost)
+            throw FlightFinderError.serverError(statusCode: 500)
         }
         
         return FlightSearchResponse(currency: "EUR", trips: [
