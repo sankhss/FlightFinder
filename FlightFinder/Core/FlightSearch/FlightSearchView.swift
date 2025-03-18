@@ -26,25 +26,9 @@ struct FlightSearchView: View {
                         loadingSection
                     } else {
                         searchForm
-                    }
-                    
-                    if viewModel.hasSearched {
-                        Section {
-                            if !viewModel.flightResults.isEmpty {
-                                Section(header: Text(Strings.FlightSearch.availableFlights)) {
-                                    ForEach(viewModel.flightResults) { flight in
-                                        FlightResultRow(flight: flight)
-                                    }
-                                    .id("flightResultsStart")
-                                }
-                            } else if !viewModel.isFlightSearchLoading {
-                                Section {
-                                    Text(Strings.FlightSearch.noFlightsFound)
-                                        .foregroundStyle(.secondary)
-                                        .frame(maxWidth: .infinity, alignment: .center)
-                                        .padding()
-                                }
-                            }
+                        
+                        if viewModel.hasSearched {
+                            resultsSection
                         }
                     }
                 }
@@ -115,6 +99,26 @@ struct FlightSearchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(40)
         .removeListRowFormatting()
+    }
+    
+    private var resultsSection: some View {
+        Section {
+            if !viewModel.flightResults.isEmpty {
+                Section(header: Text(Strings.FlightSearch.availableFlights)) {
+                    ForEach(viewModel.flightResults) { flight in
+                        FlightResultRow(flight: flight)
+                    }
+                    .id("flightResultsStart")
+                }
+            } else if !viewModel.isFlightSearchLoading {
+                Section {
+                    Text(Strings.FlightSearch.noFlightsFound)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding()
+                }
+            }
+        }
     }
     
     private func scrollToResults(_ proxy: ScrollViewProxy) {
