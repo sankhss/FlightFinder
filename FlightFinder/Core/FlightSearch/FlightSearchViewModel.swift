@@ -12,7 +12,6 @@ public final class FlightSearchViewModel: ObservableObject {
     
     @Published var stations: [Station] = []
     @Published var isStationsLoading: Bool = false
-    @Published var stationsError: String?
     
     @Published var origin: Station?
     @Published var destination: Station?
@@ -23,7 +22,9 @@ public final class FlightSearchViewModel: ObservableObject {
     
     @Published var flightResults: [FlightListItem] = []
     @Published var isFlightSearchLoading: Bool = false
-    @Published var flightsError: String?
+    
+    @Published var errorMessage: String?
+    @Published var hasSearched: Bool = false
     
     private let stationsService: StationsServiceProtocol
     private let flightService: FlightServiceProtocol
@@ -35,12 +36,12 @@ public final class FlightSearchViewModel: ObservableObject {
     
     public func loadStations() async {
         isStationsLoading = true
-        stationsError = nil
+        errorMessage = nil
         do {
             let loaded = try await stationsService.loadStations()
             stations = loaded
         } catch {
-            stationsError = error.localizedDescription
+            errorMessage = error.localizedDescription
             stations = []
         }
         isStationsLoading = false
@@ -60,7 +61,8 @@ public final class FlightSearchViewModel: ObservableObject {
         guard let origin, let destination else { return }
         
         isFlightSearchLoading = true
-        flightsError = nil
+        errorMessage = nil
+        hasSearched = false
         
         let params = FlightSearchParameters(origin: origin.code,
                                             destination: destination.code,
@@ -83,9 +85,10 @@ public final class FlightSearchViewModel: ObservableObject {
                 }
             }
             flightResults = items
+            hasSearched = true
         } catch {
             flightResults = []
-            flightsError = error.localizedDescription
+            errorMessage = error.localizedDescription
         }
         isFlightSearchLoading = false
     }

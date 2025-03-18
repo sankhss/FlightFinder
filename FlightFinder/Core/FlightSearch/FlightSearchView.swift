@@ -13,7 +13,6 @@ struct FlightSearchView: View {
     @State private var isSelectingOrigin = false
     @State private var isSelectingDestination = false
     @State private var highlightOriginField = false
-    @State private var hasSearched = false
     
     init(viewModel: FlightSearchViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -25,7 +24,7 @@ struct FlightSearchView: View {
                 List {
                     searchForm
                     
-                    if hasSearched {
+                    if viewModel.hasSearched {
                         Section {
                             if !viewModel.flightResults.isEmpty {
                                 Section(header: Text("Available Flights")) {
@@ -56,9 +55,16 @@ struct FlightSearchView: View {
                 .task {
                     await viewModel.loadStations()
                 }
-                .onChange(of: viewModel.flightResults, { _, _ in
+                .onChange(of: viewModel.flightResults) { _, _ in
                     scrollToResults(proxy)
-                })
+                }
+                .alert("", isPresented: Binding(ifNotNil: $viewModel.errorMessage)) {
+                    Button("Ok") {}
+                } message: {
+                    if let message = viewModel.errorMessage {
+                        Text(message)
+                    }
+                }
             }
         }
     }
@@ -142,7 +148,6 @@ struct FlightSearchView: View {
     private var searchButton: some View {
         Button {
             Task {
-                hasSearched = true
                 await viewModel.searchFlights()
             }
         } label: {
