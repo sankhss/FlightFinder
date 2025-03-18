@@ -84,6 +84,7 @@ struct FlightSearchView: View {
                 .foregroundColor(.white)
         }
         .frame(height: 50)
+        .background(Color.blue)
         .cornerRadius(10)
         .removeListRowFormatting()
     }
