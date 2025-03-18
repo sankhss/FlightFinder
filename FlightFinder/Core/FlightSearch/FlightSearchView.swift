@@ -27,7 +27,7 @@ struct FlightSearchView: View {
                     if viewModel.hasSearched {
                         Section {
                             if !viewModel.flightResults.isEmpty {
-                                Section(header: Text("Available Flights")) {
+                                Section(header: Text(Strings.FlightSearch.availableFlights)) {
                                     ForEach(viewModel.flightResults) { flight in
                                         FlightResultRow(flight: flight)
                                     }
@@ -35,7 +35,7 @@ struct FlightSearchView: View {
                                 }
                             } else if !viewModel.isFlightSearchLoading {
                                 Section {
-                                    Text("No flights found")
+                                    Text(Strings.FlightSearch.noFlightsFound)
                                         .foregroundStyle(.secondary)
                                         .frame(maxWidth: .infinity, alignment: .center)
                                         .padding()
@@ -44,7 +44,7 @@ struct FlightSearchView: View {
                         }
                     }
                 }
-                .navigationTitle("Find Flights")
+                .navigationTitle(Strings.FlightSearch.title)
                 .fullScreenCover(isPresented: $isSelectingOrigin) {
                     StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.origin)
                         .onDisappear { highlightOriginField = false }
@@ -59,7 +59,7 @@ struct FlightSearchView: View {
                     scrollToResults(proxy)
                 }
                 .alert("", isPresented: Binding(ifNotNil: $viewModel.errorMessage)) {
-                    Button("Ok") {}
+                    Button(Strings.FlightSearch.ok) {}
                 } message: {
                     if let message = viewModel.errorMessage {
                         Text(message)
@@ -71,13 +71,13 @@ struct FlightSearchView: View {
 
     private var searchForm: some View {
         Section {
-            stationPicker(title: "From", selection: $viewModel.origin, highlight: highlightOriginField)
+            stationPicker(title: Strings.FlightSearch.fromPlaceholder, selection: $viewModel.origin, highlight: highlightOriginField)
                 .onTapGesture {
                     isSelectingOrigin = true
                 }
                 .padding(.top)
 
-            stationPicker(title: "To", selection: $viewModel.destination)
+            stationPicker(title: Strings.FlightSearch.toPlaceholder, selection: $viewModel.destination)
                 .onTapGesture {
                     if viewModel.origin == nil {
                         highlightOriginField = true
@@ -90,11 +90,11 @@ struct FlightSearchView: View {
             datePicker
                 .padding(.top)
 
-            passengerStepper(title: "Adults", count: $viewModel.adults, range: 1...6)
+            passengerStepper(title: Strings.FlightSearch.adults, count: $viewModel.adults, range: 1...6)
                 .padding(.top)
-            passengerStepper(title: "Teens", count: $viewModel.teens, range: 0...6)
+            passengerStepper(title: Strings.FlightSearch.teens, count: $viewModel.teens, range: 0...6)
                 .padding(.top)
-            passengerStepper(title: "Children", count: $viewModel.children, range: 0...6)
+            passengerStepper(title: Strings.FlightSearch.children, count: $viewModel.children, range: 0...6)
                 .padding(.top)
 
             searchButton
@@ -123,7 +123,7 @@ struct FlightSearchView: View {
     }
     
     private var datePicker: some View {
-        DatePicker("Departure", selection: $viewModel.dateOut, displayedComponents: .date)
+        DatePicker(Strings.FlightSearch.departure, selection: $viewModel.dateOut, displayedComponents: .date)
             .padding()
             .addFormLabelStyle()
             .removeListRowFormatting()
@@ -156,7 +156,7 @@ struct FlightSearchView: View {
                 if viewModel.isFlightSearchLoading {
                     ProgressView()
                 } else {
-                    Text("Search")
+                    Text(Strings.FlightSearch.search)
                         .font(.headline)
                         .foregroundColor(.white)
                 }

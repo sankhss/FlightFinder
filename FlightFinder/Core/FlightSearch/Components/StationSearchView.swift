@@ -39,8 +39,8 @@ struct StationSearchView: View {
                     .foregroundStyle(.primary)
                 }
             }
-            .searchable(text: $searchText, prompt: "Search")
-            .navigationTitle("Select Station")
+            .searchable(text: $searchText, prompt: Strings.Stations.searchPlaceholder)
+            .navigationTitle(Strings.Stations.selectStation)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: { dismiss() }) {
