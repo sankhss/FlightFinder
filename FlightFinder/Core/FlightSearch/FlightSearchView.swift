@@ -194,7 +194,7 @@ struct FlightResultRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(flight.dateOut)
+                Text(flight.formattedDate)
                     .font(.headline)
                 Text("Flight \(flight.flightNumber)")
                     .font(.subheadline)
@@ -207,3 +207,4 @@ struct FlightResultRow: View {
         .padding(.vertical, 5)
     }
 }
+
