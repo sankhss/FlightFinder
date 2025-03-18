@@ -93,7 +93,7 @@ final class FlightSearchViewModelTests: XCTestCase {
         
         await sut.searchFlights()
 
-        let expectedItem = FlightSearchViewModel.FlightListItem(dateOut: "2022-08-09T00:00:00.000",
+        let expectedItem = FlightListItem(dateOut: "2022-08-09T00:00:00.000",
                                                                 flightNumber: "FR123",
                                                                 regularFare: 105.99)
         

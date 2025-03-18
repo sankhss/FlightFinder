@@ -202,7 +202,7 @@ extension View {
 }
 
 struct FlightResultRow: View {
-    let flight: FlightSearchViewModel.FlightListItem
+    let flight: FlightListItem
     
     var body: some View {
         HStack {
