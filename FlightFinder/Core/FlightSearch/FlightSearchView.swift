@@ -200,24 +200,3 @@ extension View {
             .foregroundStyle(.secondary)
     }
 }
-
-struct FlightResultRow: View {
-    let flight: FlightListItem
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(flight.formattedDate)
-                    .font(.headline)
-                Text("Flight \(flight.flightNumber)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Text("€\(String(format: "%.2f", flight.regularFare))")
-                .font(.headline)
-        }
-        .padding(.vertical, 5)
-    }
-}
-
