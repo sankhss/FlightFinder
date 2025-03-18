@@ -132,7 +132,6 @@ final class FlightSearchViewModelTests: XCTestCase {
         spy.delay = 2
         spy.result = .success(flightResponse)
         
-        
         let task = Task { await sut.searchFlights() }
         await Task.yield()
         

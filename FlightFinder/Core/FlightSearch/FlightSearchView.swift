@@ -13,6 +13,7 @@ struct FlightSearchView: View {
     @State private var isSelectingOrigin = false
     @State private var isSelectingDestination = false
     @State private var highlightOriginField = false
+    @State private var hasSearched = false
     
     init(viewModel: FlightSearchViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -21,34 +22,60 @@ struct FlightSearchView: View {
     var body: some View {
         NavigationStack {
             List {
-                stationPicker(title: "From", selection: $viewModel.origin, highlight: highlightOriginField)
-                    .onTapGesture {
-                        isSelectingOrigin = true
-                    }
-                    .padding(.top)
+                Section {
+                    stationPicker(title: "From", selection: $viewModel.origin, highlight: highlightOriginField)
+                        .onTapGesture {
+                            isSelectingOrigin = true
+                        }
+                        .padding(.top)
+                    
+                    stationPicker(title: "To", selection: $viewModel.destination)
+                        .onTapGesture {
+                            if viewModel.origin == nil {
+                                highlightOriginField = true
+                            } else {
+                                isSelectingDestination = true
+                            }
+                        }
+                        .padding(.top)
+                    
+                    datePicker
+                        .padding(.top)
+                    
+                    passengerStepper(title: "Adults", count: $viewModel.adults, range: 1...6)
+                        .padding(.top)
+                    passengerStepper(title: "Teens", count: $viewModel.teens, range: 0...6)
+                        .padding(.top)
+                    passengerStepper(title: "Children", count: $viewModel.children, range: 0...6)
+                        .padding(.top)
+                    
+                    searchButton
+                        .padding(.top)
+                }
                 
-                stationPicker(title: "To", selection: $viewModel.destination)
-                    .onTapGesture {
-                        if viewModel.origin == nil {
-                            highlightOriginField = true
+                if hasSearched {
+                    Section {
+                        if viewModel.isFlightSearchLoading {
+                            HStack {
+                                Spacer()
+                                ProgressView("Loading flights...")
+                                    .padding()
+                                Spacer()
+                            }
+                        } else if !viewModel.flightResults.isEmpty {
+                            Section(header: Text("Available Flights")) {
+                                ForEach(viewModel.flightResults) { flight in
+                                    FlightResultRow(flight: flight)
+                                }
+                            }
                         } else {
-                            isSelectingDestination = true
+                            Text("No flights found")
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .padding()
                         }
                     }
-                    .padding(.top)
-                
-                datePicker
-                    .padding(.top)
-                
-                passengerStepper(title: "Adults", count: $viewModel.adults, range: 1...6)
-                    .padding(.top)
-                passengerStepper(title: "Teens", count: $viewModel.teens, range: 0...6)
-                    .padding(.top)
-                passengerStepper(title: "Children", count: $viewModel.children, range: 0...6)
-                    .padding(.top)
-                
-                searchButton
-                    .padding(.top)
+                }
             }
             .navigationTitle("Find Flights")
             .fullScreenCover(isPresented: $isSelectingOrigin) {
@@ -100,6 +127,7 @@ struct FlightSearchView: View {
     private var searchButton: some View {
         Button {
             Task {
+                hasSearched = true
                 await viewModel.searchFlights()
             }
         } label: {
@@ -157,5 +185,25 @@ extension View {
             .font(.title3)
             .fontWeight(.semibold)
             .foregroundStyle(.secondary)
+    }
+}
+
+struct FlightResultRow: View {
+    let flight: FlightSearchViewModel.FlightListItem
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(flight.dateOut)
+                    .font(.headline)
+                Text("Flight \(flight.flightNumber)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text("€\(String(format: "%.2f", flight.regularFare))")
+                .font(.headline)
+        }
+        .padding(.vertical, 5)
     }
 }
