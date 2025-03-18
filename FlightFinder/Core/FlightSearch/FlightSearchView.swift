@@ -21,72 +21,85 @@ struct FlightSearchView: View {
     
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    stationPicker(title: "From", selection: $viewModel.origin, highlight: highlightOriginField)
-                        .onTapGesture {
-                            isSelectingOrigin = true
-                        }
-                        .padding(.top)
+            ScrollViewReader { proxy in
+                List {
+                    searchForm
                     
-                    stationPicker(title: "To", selection: $viewModel.destination)
-                        .onTapGesture {
-                            if viewModel.origin == nil {
-                                highlightOriginField = true
-                            } else {
-                                isSelectingDestination = true
-                            }
-                        }
-                        .padding(.top)
-                    
-                    datePicker
-                        .padding(.top)
-                    
-                    passengerStepper(title: "Adults", count: $viewModel.adults, range: 1...6)
-                        .padding(.top)
-                    passengerStepper(title: "Teens", count: $viewModel.teens, range: 0...6)
-                        .padding(.top)
-                    passengerStepper(title: "Children", count: $viewModel.children, range: 0...6)
-                        .padding(.top)
-                    
-                    searchButton
-                        .padding(.top)
-                }
-                
-                if hasSearched {
                     Section {
-                        if viewModel.isFlightSearchLoading {
-                            HStack {
-                                Spacer()
-                                ProgressView("Loading flights...")
-                                    .padding()
-                                Spacer()
-                            }
-                        } else if !viewModel.flightResults.isEmpty {
+                        if !viewModel.flightResults.isEmpty {
                             Section(header: Text("Available Flights")) {
                                 ForEach(viewModel.flightResults) { flight in
                                     FlightResultRow(flight: flight)
                                 }
+                                .id("flightResultsStart")
                             }
-                        } else {
-                            Text("No flights found")
-                                .foregroundStyle(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .padding()
+                        } else if !viewModel.isFlightSearchLoading {
+                            Section {
+                                Text("No flights found")
+                                    .foregroundStyle(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                    .padding()
+                            }
                         }
                     }
                 }
+                .navigationTitle("Find Flights")
+                .fullScreenCover(isPresented: $isSelectingOrigin) {
+                    StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.origin)
+                        .onDisappear { highlightOriginField = false }
+                }
+                .fullScreenCover(isPresented: $isSelectingDestination) {
+                    StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.destination)
+                }
+                .task {
+                    await viewModel.loadStations()
+                }
+                .onChange(of: viewModel.flightResults, { _, _ in
+                    scrollToResults(proxy)
+                })
             }
-            .navigationTitle("Find Flights")
-            .fullScreenCover(isPresented: $isSelectingOrigin) {
-                StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.origin)
-                    .onDisappear { highlightOriginField = false }
-            }
-            .fullScreenCover(isPresented: $isSelectingDestination) {
-                StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.destination)
-            }
-            .task {
-                await viewModel.loadStations()
+        }
+    }
+
+    private var searchForm: some View {
+        Section {
+            stationPicker(title: "From", selection: $viewModel.origin, highlight: highlightOriginField)
+                .onTapGesture {
+                    isSelectingOrigin = true
+                }
+                .padding(.top)
+
+            stationPicker(title: "To", selection: $viewModel.destination)
+                .onTapGesture {
+                    if viewModel.origin == nil {
+                        highlightOriginField = true
+                    } else {
+                        isSelectingDestination = true
+                    }
+                }
+                .padding(.top)
+
+            datePicker
+                .padding(.top)
+
+            passengerStepper(title: "Adults", count: $viewModel.adults, range: 1...6)
+                .padding(.top)
+            passengerStepper(title: "Teens", count: $viewModel.teens, range: 0...6)
+                .padding(.top)
+            passengerStepper(title: "Children", count: $viewModel.children, range: 0...6)
+                .padding(.top)
+
+            searchButton
+                .padding(.top)
+        }
+    }
+    
+    private func scrollToResults(_ proxy: ScrollViewProxy) {
+        if !viewModel.flightResults.isEmpty {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                withAnimation {
+                    proxy.scrollTo("flightResultsStart", anchor: .top)
+                }
             }
         }
     }
