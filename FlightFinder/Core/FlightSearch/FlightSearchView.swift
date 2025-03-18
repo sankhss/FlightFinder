@@ -79,12 +79,21 @@ struct FlightSearchView: View {
                 await viewModel.searchFlights()
             }
         } label: {
-            Text("Search")
-                .font(.headline)
-                .foregroundColor(.white)
+            HStack {
+                Spacer()
+                if viewModel.isFlightSearchLoading {
+                    ProgressView()
+                } else {
+                    Text("Search")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                }
+                Spacer()
+            }
         }
+        .disabled(viewModel.isFlightSearchLoading)
         .frame(height: 50)
-        .background(Color.blue)
+        .background(viewModel.isFlightSearchLoading ? Color.gray : Color.blue)
         .cornerRadius(10)
         .removeListRowFormatting()
     }
