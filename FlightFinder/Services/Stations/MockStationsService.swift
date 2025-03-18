@@ -8,7 +8,18 @@
 import Foundation
 
 final class MockStationsService: StationsServiceProtocol {
+    
+    let shouldDelay: Bool
+    
+    init(shouldDelay: Bool = false) {
+        self.shouldDelay = shouldDelay
+    }
+    
     func loadStations() async throws -> [Station] {
+        if shouldDelay {
+            try await Task.sleep(for: .seconds(3))
+        }
+        
         return [
             Station(code: "DUB", name: "Dublin"),
             Station(code: "STN", name: "London Stansted"),

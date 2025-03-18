@@ -22,7 +22,11 @@ struct FlightSearchView: View {
         NavigationStack {
             ScrollViewReader { proxy in
                 List {
-                    searchForm
+                    if viewModel.isStationsLoading {
+                        loadingSection
+                    } else {
+                        searchForm
+                    }
                     
                     if viewModel.hasSearched {
                         Section {
@@ -100,6 +104,17 @@ struct FlightSearchView: View {
             searchButton
                 .padding(.top)
         }
+    }
+    
+    private var loadingSection: some View {
+        VStack {
+            Spacer()
+            ProgressView()
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(40)
+        .removeListRowFormatting()
     }
     
     private func scrollToResults(_ proxy: ScrollViewProxy) {
@@ -182,5 +197,12 @@ struct FlightSearchView: View {
     FlightSearchView(viewModel: FlightSearchViewModel(
         stationsService: MockStationsService(),
         flightService: MockFlightService(showError: true)
+    ))
+}
+
+#Preview("Loading") {
+    FlightSearchView(viewModel: FlightSearchViewModel(
+        stationsService: MockStationsService(shouldDelay: true),
+        flightService: MockFlightService()
     ))
 }
