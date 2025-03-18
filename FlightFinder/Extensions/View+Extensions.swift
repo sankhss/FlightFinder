@@ -1,3 +1,12 @@
+//
+//  View+Extensions.swift
+//  FlightFinder
+//
+//  Created by Samuel Silva on 18/03/25.
+//
+
+import SwiftUI
+
 extension View {
     func removeListRowFormatting() -> some View {
         self
