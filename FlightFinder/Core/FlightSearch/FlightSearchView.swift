@@ -109,9 +109,9 @@ struct FlightSearchView: View {
                 Spacer()
             }
         }
-        .disabled(viewModel.isFlightSearchLoading)
+        .disabled(viewModel.isFlightSearchLoading || viewModel.origin.isEmpty || viewModel.destination.isEmpty)
         .frame(height: 50)
-        .background(viewModel.isFlightSearchLoading ? Color.gray : Color.blue)
+        .background(viewModel.isFlightSearchLoading || viewModel.origin.isEmpty || viewModel.destination.isEmpty ? Color.gray : Color.blue)
         .cornerRadius(10)
         .removeListRowFormatting()
     }
