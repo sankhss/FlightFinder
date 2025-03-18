@@ -92,4 +92,8 @@ public final class FlightSearchViewModel: ObservableObject {
         }
         isFlightSearchLoading = false
     }
+    
+    public func isButtonStateInvalid() -> Bool {
+        isFlightSearchLoading || origin == nil || destination == nil
+    }
 }

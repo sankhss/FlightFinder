@@ -163,9 +163,9 @@ struct FlightSearchView: View {
                 Spacer()
             }
         }
-        .disabled(viewModel.isFlightSearchLoading || viewModel.origin == nil || viewModel.destination == nil)
+        .disabled(viewModel.isButtonStateInvalid())
         .frame(height: 50)
-        .background(viewModel.isFlightSearchLoading || viewModel.origin == nil || viewModel.destination == nil ? Color.gray : Color.blue)
+        .background(viewModel.isButtonStateInvalid() ? Color.gray : Color.blue)
         .cornerRadius(10)
         .removeListRowFormatting()
     }
