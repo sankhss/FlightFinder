@@ -1,14 +1,11 @@
-final class MockStationsService: StationsServiceProtocol {
-    private let stations: [Station]
-    
-    init(stations: [Station]) {
-        self.stations = stations
-    }
-    
-    func loadStations() async throws -> [Station] {
-        return stations
-    }
-}
+//
+//  MockFlightService.swift
+//  FlightFinder
+//
+//  Created by Samuel Silva on 17/03/25.
+//
+
+import Foundation
 
 final class MockFlightService: FlightServiceProtocol {
     func searchFlights(params: FlightSearchParameters) async throws -> FlightSearchResponse {
