@@ -89,6 +89,13 @@ struct FlightSearchView: View {
     }
 }
 
+#Preview {
+    FlightSearchView(viewModel: FlightSearchViewModel(
+        stationsService: MockStationsService(),
+        flightService: MockFlightService()
+    ))
+}
+
 extension View {
     func removeListRowFormatting() -> some View {
         self
