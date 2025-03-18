@@ -12,6 +12,7 @@ struct FlightSearchView: View {
     
     @State private var isSelectingOrigin = false
     @State private var isSelectingDestination = false
+    @State private var highlightOriginField = false
     
     init(viewModel: FlightSearchViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -20,14 +21,19 @@ struct FlightSearchView: View {
     var body: some View {
         NavigationStack {
             List {
-                stationPicker(title: "From", selection: $viewModel.origin)
+                stationPicker(title: "From", selection: $viewModel.origin, highlight: highlightOriginField)
                     .onTapGesture {
                         isSelectingOrigin = true
                     }
                     .padding(.top)
+                
                 stationPicker(title: "To", selection: $viewModel.destination)
                     .onTapGesture {
-                        isSelectingDestination = true
+                        if viewModel.origin.isEmpty {
+                            highlightOriginField = true
+                        } else {
+                            isSelectingDestination = true
+                        }
                     }
                     .padding(.top)
                 
@@ -56,15 +62,15 @@ struct FlightSearchView: View {
             }
         }
     }
-
-    private func stationPicker(title: String, selection: Binding<String>) -> some View {
+    
+    private func stationPicker(title: String, selection: Binding<String>, highlight: Bool = false) -> some View {
         Text(title)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
             .font(.title3)
             .fontWeight(.semibold)
             .foregroundStyle(.secondary)
-            .addFieldBackground()
+            .addFieldBackground(highlighted: highlight)
             .removeListRowFormatting()
     }
     
@@ -132,12 +138,16 @@ extension View {
             .listRowBackground(Color.clear)
     }
     
-    func addFieldBackground() -> some View {
+    func addFieldBackground(highlighted: Bool = false) -> some View {
         background(
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.init(uiColor: .systemBackground))
+                    .fill(Color(uiColor: .systemBackground))
                     .shadow(color: Color.gray.opacity(0.3), radius: 16, x: 6, y: 6)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(highlighted ? Color.red : Color.clear, lineWidth: 2)
+                    )
             }
         )
     }
