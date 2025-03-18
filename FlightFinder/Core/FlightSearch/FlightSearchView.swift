@@ -10,6 +10,9 @@ import SwiftUI
 struct FlightSearchView: View {
     @StateObject private var viewModel: FlightSearchViewModel
     
+    @State private var isSelectingOrigin = false
+    @State private var isSelectingDestination = false
+    
     init(viewModel: FlightSearchViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
@@ -18,8 +21,14 @@ struct FlightSearchView: View {
         NavigationStack {
             List {
                 stationPicker(title: "From", selection: $viewModel.origin)
+                    .onTapGesture {
+                        isSelectingOrigin = true
+                    }
                     .padding(.top)
                 stationPicker(title: "To", selection: $viewModel.destination)
+                    .onTapGesture {
+                        isSelectingDestination = true
+                    }
                     .padding(.top)
                 
                 datePicker
@@ -36,6 +45,15 @@ struct FlightSearchView: View {
                     .padding(.top)
             }
             .navigationTitle("Find Flights")
+            .fullScreenCover(isPresented: $isSelectingOrigin) {
+                StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.origin)
+            }
+            .fullScreenCover(isPresented: $isSelectingDestination) {
+                StationSearchView(stations: viewModel.stations, selectedStation: $viewModel.destination)
+            }
+            .task {
+                await viewModel.loadStations()
+            }
         }
     }
 
@@ -51,7 +69,7 @@ struct FlightSearchView: View {
     }
     
     private var datePicker: some View {
-        DatePicker("Departure Date", selection: $viewModel.dateOut, displayedComponents: .date)
+        DatePicker("Departure", selection: $viewModel.dateOut, displayedComponents: .date)
             .padding()
             .addFormLabelStyle()
             .removeListRowFormatting()
